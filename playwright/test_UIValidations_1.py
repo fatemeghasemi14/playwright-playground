@@ -17,3 +17,14 @@ def test_UIValidationDynamicScript(page: Page):
     page.get_by_text("Checkout").click()
     expect(page.locator(".media-object")).to_have_count(2)
     time.sleep(10)
+
+
+def test_childWindowHandle(page: Page):
+    page.goto("https://rahulshettyacademy.com/loginpagePractise/")
+
+    with page.expect_popup() as newPageInfo:
+        page.locator(".blinkingText").click()
+        childPage = newPageInfo.value
+        text = childPage.locator(".red").text_content()
+        email = text.split()
+        assert email[4] =="mentor@rahulshettyacademy.com"
