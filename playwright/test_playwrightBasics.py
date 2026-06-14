@@ -1,6 +1,4 @@
-import time
-
-from playwright.sync_api import Page,Playwright, expect
+from playwright.sync_api import Page, expect
 
 
 def test_playwrightBasics(playwright):
@@ -9,34 +7,34 @@ def test_playwrightBasics(playwright):
     page = context.new_page()
     page.goto("https://rahulshettyacademy.com/")
 
-
-#chromium headless mode, 1 single context
-def test_playwrightShortcut(page: Page):
+def test_playwrightShortCut(page : Page):
     page.goto("https://rahulshettyacademy.com/")
+    time.sleep(10)
 
-
-# cssSelector  #id .class
-# Incorrect username/password.
-def test_coreLocators(page: Page):
+""" Give Correct Credentials And
+    Verify That You Can Sign In Or Not"""
+def test_coreLocators(page : Page):
     page.goto("https://rahulshettyacademy.com/loginpagePractise/")
     page.get_by_label("Username:").fill("rahulshettyacademy")
-    page.get_by_label("Password:").fill("learning123")
+    page.get_by_label("Password:").fill("Learning@830$3mK2")
+
+    # Select Option By Value
     page.get_by_role("combobox").select_option("teach")
+
+    # Select Option By Lable
+    page.get_by_role("combobox").select_option(label="Consultant")
+
+    # css selector #id, .class, tag name
     page.locator("#terms").check()
+
+    page.get_by_role("button", name="Sign In").click()
+
+
+""" Give Wrong Credentials And
+Verify That You Give proper error message"""
+def test_wrongCredentials(page : Page):
+    page.goto("https://rahulshettyacademy.com/loginpagePractise/")
+    page.locator("#username").fill("fghasemi")
+    page.locator("#password").fill("fghasemi")
     page.get_by_role("button", name="Sign In").click()
     expect(page.get_by_text("Incorrect username/password.")).to_be_visible()
-    time.sleep(5)
-
-
-# Empty username/password.
-def test_firefoxBrowser(playwright: Playwright):
-    browser = playwright.firefox.launch(headless=False)
-    page = browser.new_page()
-    page.goto("https://rahulshettyacademy.com/loginpagePractise/")
-    page.get_by_label("Username:").fill("")
-    page.get_by_label("Password:").fill("")
-    page.get_by_role("combobox").select_option("Consultant")
-    page.get_by_role("checkbox").check()
-    page.get_by_role("button", name="Sign In").click()
-    expect(page.get_by_text("Empty username/password.")).to_be_visible()
-    time.sleep(5)
